@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "volumes/data:/data"
+    restart: unless-stopped
+
+  cloudflared:
+    restart: unless-stopped
+    image: cloudflare/cloudflared
+
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+
+    env_file: .env
+    command: tunnel run
